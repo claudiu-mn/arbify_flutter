@@ -86,13 +86,13 @@ class S {
     });
   }
 
-  static S of(BuildContext context) => Localizations.of<S>(context, S);$messages
+  static S? of(BuildContext context) => Localizations.of<S>(context, S);$messages
 }
 
 class ArbifyLocalizationsDelegate extends LocalizationsDelegate<S> {
   const ArbifyLocalizationsDelegate();
 
-  List<Locale> get supportedLocales => [
+  List<Locale> get supportedLocales => const [
 $supportedLocales  ];
 
   @override
@@ -119,7 +119,8 @@ $supportedLocales  ];
           locale.script == null ? '' : ", countryCode: '${locale.region}'";
 
       supportedLocales.writeln(
-          '        Locale.fromSubtags($languageCode$scriptCode$countryCode),');
+        '    Locale.fromSubtags($languageCode$scriptCode$countryCode),',
+      );
     }
 
     return supportedLocales.toString();

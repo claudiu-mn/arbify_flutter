@@ -15,7 +15,8 @@ class OutputFileUtils {
 
     if (pattern != null) {
       files = files.where(
-          (file) => pattern.allMatches(path.basename(file.path)).isNotEmpty);
+        (file) => pattern.allMatches(path.basename(file.path)).isNotEmpty,
+      );
     }
 
     return files.map((file) => file.readAsStringSync()).toList();
@@ -26,7 +27,8 @@ class OutputFileUtils {
 
     if (pattern != null) {
       files = files.where(
-          (file) => pattern.allMatches(path.basename(file.path)).isNotEmpty);
+        (file) => pattern.allMatches(path.basename(file.path)).isNotEmpty,
+      );
     }
 
     return files.map((file) => file.path).toList();

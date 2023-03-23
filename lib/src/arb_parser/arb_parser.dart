@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'arb_file.dart';
-import 'arb_message.dart';
+import 'package:arbify/src/arb_parser/arb_file.dart';
+import 'package:arbify/src/arb_parser/arb_message.dart';
 
 class ArbParser {
   ArbFile parseString(String content) {
@@ -57,10 +57,12 @@ class ArbParser {
   Map<String, dynamic> parseCustomAttributes(Map<String, dynamic> attributes) {
     final entries = attributes.entries
         .where((attribute) => attribute.key.startsWith('x-'))
-        .map((attribute) => MapEntry(
-              attribute.key.substring(2),
-              attribute.value,
-            ));
+        .map(
+          (attribute) => MapEntry(
+            attribute.key.substring(2),
+            attribute.value,
+          ),
+        );
 
     return Map.fromEntries(entries);
   }

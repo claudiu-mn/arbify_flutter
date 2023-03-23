@@ -1,7 +1,6 @@
-import 'package:meta/meta.dart';
+import 'package:arbify/src/api/export_info.dart';
 import 'package:dio/dio.dart';
-
-import 'export_info.dart';
+import 'package:meta/meta.dart';
 
 class ArbifyApi {
   static const _apiPrefix = '/api/v1';
@@ -10,7 +9,7 @@ class ArbifyApi {
 
   ArbifyApi({@required Uri apiUrl, @required String secret, Dio client})
       : _client = client ?? Dio() {
-    _client.options = _client.options.merge(
+    _client.options = _client.options.copyWith(
       baseUrl: apiUrl.toString() + _apiPrefix,
       headers: {
         'Accept': 'application/json',
@@ -26,8 +25,10 @@ class ArbifyApi {
     return _client.get('/projects/$projectId/arb').then((response) {
       return (response.data as Map<String, dynamic>)
           .entries
-          .map((entry) =>
-              ExportInfo(entry.key, DateTime.parse(entry.value as String)))
+          .map(
+            (entry) =>
+                ExportInfo(entry.key, DateTime.parse(entry.value as String)),
+          )
           .toList();
     });
   }

@@ -31,14 +31,13 @@ import 'dart:convert';
 
 import 'package:intl_translation/extract_messages.dart';
 import 'package:intl_translation/generate_localized.dart';
-import 'package:intl_translation/src/icu_parser.dart';
-import 'package:intl_translation/src/intl_message.dart';
+import 'package:intl_translation/src/message_parser.dart';
+import 'package:intl_translation/src/messages/literal_string_message.dart';
+import 'package:intl_translation/src/messages/main_message.dart';
 import 'package:path/path.dart' as path;
 import 'package:universal_io/io.dart';
 
 class IntlTranslation {
-  final pluralAndGenderParser = IcuParser().message;
-  final plainParser = IcuParser().nonIcuMessage;
   final JsonCodec jsonDecoder = const JsonCodec();
 
   final MessageExtraction extraction = MessageExtraction();
@@ -53,12 +52,16 @@ class IntlTranslation {
   }
 
   void generateFromArb(
-      String outputDir, List<String> dartFiles, List<String> arbFiles) {
+    String outputDir,
+    List<String> dartFiles,
+    List<String> arbFiles,
+  ) {
     final allMessages =
         dartFiles.map((file) => extraction.parseFile(File(file)));
     for (final messageMap in allMessages) {
       messageMap.forEach(
-          (key, value) => messages.putIfAbsent(key, () => []).add(value));
+        (key, value) => messages.putIfAbsent(key, () => []).add(value),
+      );
     }
 
     final messagesByLocale = <String, List<Map>>{};
@@ -70,9 +73,21 @@ class IntlTranslation {
       _generateLocaleFile(locale, data, outputDir);
     });
 
-    final mainImportFile = File(path.join(
-        outputDir, '${generation.generatedFilePrefix}messages_all.dart'));
+    final mainImportFile = File(
+      path.join(
+        outputDir,
+        '${generation.generatedFilePrefix}messages_all.dart',
+      ),
+    );
     mainImportFile.writeAsStringSync(generation.generateMainImportFile());
+
+    final localesImportFile = File(
+      path.join(
+        outputDir,
+        '${generation.generatedFilePrefix}messages_all_locales.dart',
+      ),
+    );
+    localesImportFile.writeAsStringSync(generation.generateLocalesImportFile());
   }
 
   void _loadData(String filename, Map<String, List<Map>> messagesByLocale) {
@@ -115,29 +130,14 @@ class IntlTranslation {
   /// things that are messages, we expect [id] not to start with "@" and
   /// [data] to be a String. For metadata we expect [id] to start with "@"
   /// and [data] to be a Map or null. For metadata we return null.
-  BasicTranslatedMessage _recreateIntlObjects(String id, data) {
+  TranslatedMessage _recreateIntlObjects(String id, data) {
     if (id.startsWith('@')) return null;
     if (data == null) return null;
-    var parsed = pluralAndGenderParser.parse(data as String).value;
+    final parser = MessageParser(data as String);
+    var parsed = parser.pluralGenderSelectParse();
     if (parsed is LiteralString && parsed.string.isEmpty) {
-      parsed = plainParser.parse(data as String).value;
+      parsed = parser.nonIcuMessageParse();
     }
-    return BasicTranslatedMessage(id, parsed as Message, messages);
+    return TranslatedMessage(id, parsed, messages[id]);
   }
-}
-
-/// A TranslatedMessage that just uses the name as the id and knows how to look up its original messages in our [messages].
-class BasicTranslatedMessage extends TranslatedMessage {
-  Map<String, List<MainMessage>> messages;
-
-  BasicTranslatedMessage(String name, Message translated, this.messages)
-      : super(name, translated);
-
-  @override
-  List<MainMessage> get originalMessages => (super.originalMessages == null)
-      ? _findOriginals()
-      : super.originalMessages;
-
-  // We know that our [id] is the name of the message, which is used as the key in [messages].
-  List<MainMessage> _findOriginals() => originalMessages = messages[id];
 }

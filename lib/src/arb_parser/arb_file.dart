@@ -1,4 +1,4 @@
-import 'arb_message.dart';
+import 'package:arbify/src/arb_parser/arb_message.dart';
 
 class ArbFile {
   /// [locale] is the locale for which messages/resources are stored

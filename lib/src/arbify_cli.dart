@@ -1,4 +1,3 @@
-import 'package:path/path.dart' as path;
 import 'package:arbify/src/api/arbify_api.dart';
 import 'package:arbify/src/arb_parser/arb_file.dart';
 import 'package:arbify/src/arb_parser/arb_parser.dart';
@@ -10,6 +9,7 @@ import 'package:arbify/src/generator/l10n_dart_generator.dart';
 import 'package:arbify/src/output_file_utils.dart';
 import 'package:args/args.dart';
 import 'package:dio/dio.dart';
+import 'package:path/path.dart' as path;
 import 'package:universal_io/io.dart';
 
 class ArbifyCli {
@@ -56,7 +56,7 @@ class ArbifyCli {
     try {
       await runDownload(config);
     } on DioError catch (e) {
-      if (e.type == DioErrorType.RESPONSE) {
+      if (e.type == DioErrorType.response) {
         if (e.response.statusCode == 403) {
           _printApiForbidden(config.projectId);
         } else if (e.response.statusCode == 404) {

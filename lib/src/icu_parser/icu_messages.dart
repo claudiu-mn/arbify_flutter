@@ -186,10 +186,12 @@ class Gender extends IcuMessage {
     Message parent,
   ) {
     final gender = Gender(variableName, {}, parent);
-    gender.clauses.addEntries(genderClauses.map(
-      (clause) =>
-          MapEntry(clause[0] as String, Message.from(clause[1], gender)),
-    ));
+    gender.clauses.addEntries(
+      genderClauses.map(
+        (clause) =>
+            MapEntry(clause[0] as String, Message.from(clause[1], gender)),
+      ),
+    );
 
     return gender;
   }
@@ -208,10 +210,12 @@ class Plural extends IcuMessage {
     Message parent,
   ) {
     final plural = Plural(variableName, {}, parent);
-    plural.clauses.addEntries(pluralClauses.map(
-      (clause) =>
-          MapEntry(clause[0] as String, Message.from(clause[1], plural)),
-    ));
+    plural.clauses.addEntries(
+      pluralClauses.map(
+        (clause) =>
+            MapEntry(clause[0] as String, Message.from(clause[1], plural)),
+      ),
+    );
 
     return plural;
   }
@@ -219,8 +223,10 @@ class Plural extends IcuMessage {
 
 class Select extends IcuMessage {
   Select(
-      String variableName, Map<String, Message> selectClauses, Message parent)
-      : super('select', variableName, selectClauses, parent);
+    String variableName,
+    Map<String, Message> selectClauses,
+    Message parent,
+  ) : super('select', variableName, selectClauses, parent);
 
   factory Select.from(
     String variableName,
@@ -228,10 +234,12 @@ class Select extends IcuMessage {
     Message parent,
   ) {
     final select = Select(variableName, {}, parent);
-    select.clauses.addEntries(selectClauses.map(
-      (clause) =>
-          MapEntry(clause[0] as String, Message.from(clause[1], select)),
-    ));
+    select.clauses.addEntries(
+      selectClauses.map(
+        (clause) =>
+            MapEntry(clause[0] as String, Message.from(clause[1], select)),
+      ),
+    );
 
     return select;
   }

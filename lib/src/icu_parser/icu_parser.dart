@@ -27,8 +27,8 @@
 //
 // Modified by Albert Wolszon.
 
+import 'package:arbify/src/icu_parser/icu_messages.dart';
 import 'package:petitparser/petitparser.dart';
-import 'icu_messages.dart';
 
 /// This defines a grammar for ICU MessageFormat syntax. Usage is
 ///       IcuParser.message.parse(<string>).value;
@@ -60,7 +60,8 @@ class IcuParser {
       list.map(string).cast<Parser>().reduce((a, b) => a | b).flatten().trim();
 
   Parser get pluralKeyword => asKeywords(
-      ['=0', '=1', '=2', 'zero', 'one', 'two', 'few', 'many', 'other']);
+        ['=0', '=1', '=2', 'zero', 'one', 'two', 'few', 'many', 'other'],
+      );
   Parser get genderKeyword => asKeywords(['female', 'male', 'other']);
 
   SettableParser interiorText = undefined();
@@ -75,7 +76,9 @@ class IcuParser {
   Parser get plural =>
       preface & pluralLiteral & comma & pluralClause.plus() & closeCurly;
   Parser get intlPlural => plural.map(
-      (values) => Plural.from(values.first as String, values[3] as List, null));
+        (values) =>
+            Plural.from(values.first as String, values[3] as List, null),
+      );
 
   Parser get genderLiteral => string('gender');
   Parser get genderClause =>
@@ -85,7 +88,9 @@ class IcuParser {
   Parser get gender =>
       preface & genderLiteral & comma & genderClause.plus() & closeCurly;
   Parser get intlGender => gender.map(
-      (values) => Gender.from(values.first as String, values[3] as List, null));
+        (values) =>
+            Gender.from(values.first as String, values[3] as List, null),
+      );
 
   Parser get selectLiteral => string('select');
   Parser get selectClause =>
@@ -93,7 +98,9 @@ class IcuParser {
   Parser get generalSelect =>
       preface & selectLiteral & comma & selectClause.plus() & closeCurly;
   Parser get intlSelect => generalSelect.map(
-      (values) => Select.from(values.first as String, values[3] as List, null));
+        (values) =>
+            Select.from(values.first as String, values[3] as List, null),
+      );
 
   Parser get pluralOrGenderOrSelect => intlPlural | intlGender | intlSelect;
 

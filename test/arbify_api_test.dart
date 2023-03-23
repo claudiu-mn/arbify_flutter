@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:arbify/src/api/arbify_api.dart';
 import 'package:arbify/src/api/export_info.dart';
 import 'package:dio/dio.dart';
-import 'package:test/test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:test/test.dart';
 
 class DioAdapterMock extends Mock implements HttpClientAdapter {}
 
@@ -54,7 +54,11 @@ void main() {
 }
 
 ResponseBody _makeJsonResponse(dynamic data, int status) {
-  return ResponseBody.fromString(jsonEncode(data), status, headers: {
-    'content-type': ['application/json']
-  });
+  return ResponseBody.fromString(
+    jsonEncode(data),
+    status,
+    headers: {
+      'content-type': ['application/json']
+    },
+  );
 }
